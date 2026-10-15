@@ -15,12 +15,12 @@
 <meta property="og:url" content="https://sarahlechtser.com/">
 <meta property="og:title" content="Sarah Lechtser">
 <meta property="og:description" content="M.Sc. student at the Weizmann Institute of Science.">
-<meta property="og:image" content="https://sarahlechtser.com/assets/og.jpg?v=2">
+<meta property="og:image" content="https://sarahlechtser.com/assets/og.jpg?v=3">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Sarah Lechtser — her photo in a ring of colored dots beside her name">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://sarahlechtser.com/assets/og.jpg?v=2">
+<meta name="twitter:image" content="https://sarahlechtser.com/assets/og.jpg?v=3">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -665,7 +665,7 @@
   const motionOK = !matchMedia("(prefers-reduced-motion: reduce)").matches;
   function adder(parent) { return (tag, attrs, into) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); (into || parent).appendChild(e); return e; }; }
 
-  // Hero: hex grid of spots around the photo, colored by "cell-type" clusters, with antibodies at the edge.
+  // Hero: hex grid of spots around the photo, colored by "cell-type" clusters, with small icons at the edge.
   (function tissue() {
     const svg = document.getElementById("tissue"), add = adder(svg), r = rng(7), C = 260;
     const colors = ["var(--cyan)", "var(--magenta)", "var(--amber)", "var(--violet)", "var(--green)"];
@@ -688,17 +688,47 @@
         c.style.animationDelay = `${((d - inner) * 3.2).toFixed(0)}ms`;
       }
     }
-    // Y-shaped antibodies drifting just outside the tissue
-    for (let i = 0; i < 9; i++) {
+    // Small line icons drifting just outside the tissue: one antibody, then bits of Sarah's story.
+    const ln = { fill: "none", "stroke-linecap": "round", "stroke-linejoin": "round" };
+    const tri = up => [0, 1, 2].map(k => { const t = (k * 120 + (up ? -90 : 90)) * Math.PI / 180; return `${(6.6 * Math.cos(t)).toFixed(2)} ${(6.6 * Math.sin(t)).toFixed(2)}`; }).join(" L");
+    const icons = [
+      { name: "antibody", outward: true, draw: g => { // immunology
+        add("path", { d: "M0 7 V0 M0 0 L-5 -6 M0 0 L5 -6", ...ln, "stroke-width": 2.2 }, g);
+        add("circle", { cx: -5, cy: -6, r: 1.5, stroke: "none" }, g); add("circle", { cx: 5, cy: -6, r: 1.5, stroke: "none" }, g); } },
+      { name: "atom", draw: g => { // physics
+        for (const rot of [0, 60, 120]) add("ellipse", { rx: 7, ry: 2.6, transform: `rotate(${rot})`, ...ln, "stroke-width": 1.3 }, g);
+        add("circle", { r: 1.5, stroke: "none" }, g); } },
+      { name: "lotus", draw: g => { // yoga
+        add("path", { d: "M0 5 C-3 1.5 -2.4 -2.8 0 -6 C2.4 -2.8 3 1.5 0 5 Z M0 5 C-4.6 4.6 -7.4 1.6 -7.6 -1.6 C-4.4 -0.8 -1.6 1.2 0 5 M0 5 C4.6 4.6 7.4 1.6 7.6 -1.6 C4.4 -0.8 1.6 1.2 0 5", ...ln, "stroke-width": 1.5 }, g); } },
+      { name: "code", draw: g => { // software
+        add("path", { d: "M-3.6 -5 L-7.6 0 L-3.6 5 M3.6 -5 L7.6 0 L3.6 5 M1.4 -6 L-1.4 6", ...ln, "stroke-width": 1.8 }, g); } },
+      { name: "wave", draw: g => { // the sea
+        add("path", { d: "M-8 -1 C-6 -4 -3.5 -4 -2 -1 C-0.5 2 2 2 4 -1 C5.4 -3.2 7 -3.4 8 -2 M-8 4.5 C-6 1.5 -3.5 1.5 -2 4.5 C-0.5 7.5 2 7.5 4 4.5 C5.4 2.3 7 2.1 8 3.5", ...ln, "stroke-width": 1.6 }, g); } },
+      { name: "matryoshka", draw: g => { // Russian roots
+        add("path", { d: "M-2.4 -2.4 C-6 -0.6 -6 6.6 0 6.6 C6 6.6 6 -0.6 2.4 -2.4", ...ln, "stroke-width": 1.5 }, g);
+        add("circle", { cy: -4.4, r: 3, ...ln, "stroke-width": 1.5 }, g);
+        add("circle", { cy: -4.2, r: 1.3, stroke: "none" }, g);
+        add("path", { d: "M-2.6 2.6 Q0 4.2 2.6 2.6", ...ln, "stroke-width": 1.2 }, g); } },
+      { name: "desert", draw: g => { // Arad, at the edge of the desert
+        add("path", { d: "M-8 5 L-3 -1.5 L0 2 L3.4 -3.6 L8 5 Z", ...ln, "stroke-width": 1.6 }, g);
+        add("circle", { cx: -5.4, cy: -5.6, r: 1.7, stroke: "none" }, g); } },
+      { name: "enso", draw: g => { // meditation
+        add("path", { d: "M3.9 -4.6 A6 6 0 1 1 -0.6 -6", ...ln, "stroke-width": 2 }, g); } },
+      { name: "star", draw: g => { // Israel
+        add("path", { d: `M${tri(true)} Z M${tri(false)} Z`, ...ln, "stroke-width": 1.3 }, g); } },
+    ];
+    icons.forEach((icon, i) => {
       const a = (i / 9) * Math.PI * 2 + 0.35 + r() * 0.3, d = 226 + r() * 10;
       const x = C + Math.cos(a) * d, y = C + Math.sin(a) * d, col = colors[(i * 2) % colors.length];
-      const outerG = add("g", { transform: `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${(a * 180 / Math.PI + 90 + (r() - .5) * 40).toFixed(0)}) scale(${(1 + r() * .4).toFixed(2)})` });
+      const tilt = r() - .5, size = r();
+      const rot = icon.outward ? a * 180 / Math.PI + 90 + tilt * 40 : tilt * 24;
+      const scale = icon.outward ? 1 + size * .4 : .9 + size * .2;
+      const outerG = add("g", { transform: `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot.toFixed(0)}) scale(${scale.toFixed(2)})` });
       const bob = add("g", { class: "bob" }, outerG); bob.style.animationDelay = `${-i * 0.45}s`;
-      const g = add("g", { stroke: col, fill: col, class: "spot" }, bob);
+      const g = add("g", { stroke: col, fill: col, class: "spot icon-" + icon.name }, bob);
       g.style.setProperty("--o", ".9"); g.style.transformBox = "fill-box"; g.style.transformOrigin = "center"; g.style.animationDelay = `${500 + i * 60}ms`;
-      add("path", { d: "M0 7 V0 M0 0 L-5 -6 M0 0 L5 -6", fill: "none", "stroke-width": 2.2, "stroke-linecap": "round" }, g);
-      add("circle", { cx: -5, cy: -6, r: 1.5, stroke: "none" }, g); add("circle", { cx: 5, cy: -6, r: 1.5, stroke: "none" }, g);
-    }
+      icon.draw(g);
+    });
     // Hovering the tissue magnifies the spots under the pointer, like a lens.
     if (motionOK && matchMedia("(pointer: fine)").matches) {
       const tis = svg.parentElement, spots = [...svg.querySelectorAll("circle.spot")].map(c => ({ c, x: +c.getAttribute("cx"), y: +c.getAttribute("cy") }));
