@@ -256,16 +256,12 @@
     @keyframes sweep { 0% { translate: 0 0; opacity: 0; } 10%, 88% { opacity: 1; } 100% { translate: 160px 0; opacity: 0; } }
 
     /* hover */
-    .logo { transition: transform .35s cubic-bezier(.3,1.6,.5,1); }
-    .entry:hover .logo { transform: rotate(-6deg) scale(1.07); }
     .links a { transition: border-color .2s, color .2s, transform .25s cubic-bezier(.3,1.6,.5,1); }
     .links a:hover { transform: translateY(-2px); }
     .chips span { transition: transform .2s ease, border-color .2s ease; }
     .chips span:hover { transform: translateY(-2px); border-color: var(--c); }
     .beyond li { transition: transform .3s ease, box-shadow .3s ease; }
     .beyond li:hover { transform: translateY(-3px); box-shadow: 0 12px 26px -16px color-mix(in srgb, var(--c) 70%, transparent); }
-    .beyond li:hover svg { animation: wiggle .6s ease-in-out; }
-    @keyframes wiggle { 30% { rotate: -9deg; } 65% { rotate: 6deg; } }
   }
 
 
