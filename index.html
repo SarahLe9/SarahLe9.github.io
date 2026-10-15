@@ -268,6 +268,29 @@
     @keyframes wiggle { 30% { rotate: -9deg; } 65% { rotate: 6deg; } }
   }
 
+
+  /* ---------- Wide screens: sticky intro on the left, timeline on the right ---------- */
+  @media (min-width: 1100px) {
+    .page {
+      max-width: 1240px; padding: 64px 40px 48px;
+      display: grid; grid-template-columns: 360px minmax(0, 1fr); column-gap: 80px; align-items: start;
+    }
+    header { grid-column: 1; grid-row: 1 / span 3; position: sticky; top: 48px; }
+    .page > :not(header) { grid-column: 2; }
+    .tissue { width: 320px; margin-bottom: 4px; }
+    h1 { font-size: 48px; }
+    .bio { font-size: 16px; }
+    .links { gap: 8px; }
+    .timeline { margin-top: 8px; }
+  }
+  /* shorter laptop screens: a smaller ring so the whole intro stays in view */
+  @media (min-width: 1100px) and (max-height: 860px) {
+    header { top: 24px; }
+    .tissue { width: 250px; }
+    h1 { font-size: 42px; }
+  }
+  @media (min-width: 1100px) and (max-height: 640px) { header { position: static; } }
+
   /* ---------- Mobile ---------- */
   @media (max-width: 640px) {
     .page { padding-top: 16px; }
