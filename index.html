@@ -15,12 +15,12 @@
 <meta property="og:url" content="https://sarahlechtser.com/">
 <meta property="og:title" content="Sarah Lechtser">
 <meta property="og:description" content="M.Sc. student at the Weizmann Institute of Science.">
-<meta property="og:image" content="https://sarahlechtser.com/assets/og.jpg?v=3">
+<meta property="og:image" content="https://sarahlechtser.com/assets/og.jpg?v=4">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Sarah Lechtser — her photo in a ring of colored dots beside her name">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://sarahlechtser.com/assets/og.jpg?v=3">
+<meta name="twitter:image" content="https://sarahlechtser.com/assets/og.jpg?v=4">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -690,7 +690,6 @@
     }
     // Small line icons drifting just outside the tissue: one antibody, then bits of Sarah's story.
     const ln = { fill: "none", "stroke-linecap": "round", "stroke-linejoin": "round" };
-    const tri = up => [0, 1, 2].map(k => { const t = (k * 120 + (up ? -90 : 90)) * Math.PI / 180; return `${(6.6 * Math.cos(t)).toFixed(2)} ${(6.6 * Math.sin(t)).toFixed(2)}`; }).join(" L");
     const icons = [
       { name: "antibody", outward: true, draw: g => { // immunology
         add("path", { d: "M0 7 V0 M0 0 L-5 -6 M0 0 L5 -6", ...ln, "stroke-width": 2.2 }, g);
@@ -714,8 +713,6 @@
         add("circle", { cx: -5.4, cy: -5.6, r: 1.7, stroke: "none" }, g); } },
       { name: "enso", draw: g => { // meditation
         add("path", { d: "M3.9 -4.6 A6 6 0 1 1 -0.6 -6", ...ln, "stroke-width": 2 }, g); } },
-      { name: "star", draw: g => { // Israel
-        add("path", { d: `M${tri(true)} Z M${tri(false)} Z`, ...ln, "stroke-width": 1.3 }, g); } },
     ];
     icons.forEach((icon, i) => {
       const a = (i / 9) * Math.PI * 2 + 0.35 + r() * 0.3, d = 226 + r() * 10;
