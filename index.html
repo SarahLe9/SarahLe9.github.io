@@ -144,7 +144,7 @@
   }
 
   /* Project figures */
-  .projects { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px 16px; margin-top: 18px; }
+  .projects { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 16px; margin-top: 18px; }
   .projects figure { margin: 0; }
   .projects svg { display: block; width: 100%; height: auto; border-radius: 12px; }
   .projects figcaption { margin-top: 8px; font-size: 13.5px; line-height: 1.45; color: var(--muted); }
@@ -195,8 +195,6 @@
     background: var(--grad, linear-gradient(to bottom, var(--cyan) 10%, var(--magenta) 15% 28%, var(--amber) 33% 39%, var(--violet) 44% 71%, var(--green) 76%));
   }
   .tissue .spot { transition: scale .35s cubic-bezier(.2,.8,.2,1); }
-  .spin { color: #c62f83; transform-box: fill-box; transform-origin: center; }
-  .spin.down { color: #1597ae; rotate: 180deg; }
   @media (prefers-reduced-motion: reduce) { .timeline { --p: 1; } }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -254,8 +252,6 @@
     @keyframes pulse { 50% { opacity: .3; } }
     .sweep { animation: sweep 3s cubic-bezier(.6,0,.4,1) infinite; }
     @keyframes sweep { 0% { translate: 0 0; opacity: 0; } 10%, 88% { opacity: 1; } 100% { translate: 160px 0; opacity: 0; } }
-
-    .spin { transition: rotate .45s cubic-bezier(.4,1.6,.5,1), color .45s ease; }
 
     /* hover */
     .logo { transition: transform .35s cubic-bezier(.3,1.6,.5,1); }
@@ -541,12 +537,6 @@
             </svg>
             <figcaption><b>Tensor network algorithms</b>Explored the efficiency of tensor network algorithms for quantum computing.</figcaption>
           </figure>
-
-          <figure>
-            <!-- Ising model: spin lattice with two domains and a magnetization curve -->
-            <svg id="ising" viewBox="0 0 240 150" role="img" aria-label="Illustration of an Ising spin lattice with two magnetic domains and an inset magnetization curve"></svg>
-            <figcaption><b>Ising model simulators</b>Monte Carlo simulations of spin systems and phase transitions. <a href="https://github.com/SarahLe9/Ising-Model-Simulators">Code</a></figcaption>
-          </figure>
         </div>
       </div>
     </li>
@@ -760,57 +750,6 @@
     lg(158, "CO₂");
   })();
 
-  // Ising lattice: two domains with a wavy wall, plus an inset magnetization curve.
-  (function ising() {
-    const svg = document.getElementById("ising"), add = adder(svg), r = rng(11);
-    add("rect", { width: 240, height: 150, fill: "#e3f5f8" });
-    const wall = j => 112 + Math.sin(j * 1.1) * 28;
-    let wd = "";
-    for (let j = 0; j < 6; j++) {
-      const lastUp = Math.floor((wall(j) - 22) / 19.6), wx = 22 + lastUp * 19.6 + 9.8;
-      wd += (j ? "L" : "M") + wx.toFixed(1) + " " + (j ? 22 + j * 21.5 : 10) + (j === 5 ? " V140" : "");
-    }
-    add("path", { d: wd, fill: "none", stroke: "#5b3fd6", "stroke-width": 1.4, "stroke-dasharray": "4 3", opacity: .7 });
-    const S = [], H = [], el = [];
-    for (let j = 0; j < 6; j++) { S.push([]); H.push([]); el.push([]);
-      for (let i = 0; i < 11; i++) {
-        const x = 22 + i * 19.6, y = 22 + j * 21.5;
-        let up = x < wall(j); H[j].push(up ? 0.5 : -0.5); if (r() < 0.1) up = !up;
-        S[j].push(up ? 1 : -1);
-        const sp = add("g", { class: "spin" + (up ? "" : " down") }, add("g", { transform: `translate(${x} ${y})` }));
-        add("line", { x1: 0, y1: 7, x2: 0, y2: -7, stroke: "currentColor", "stroke-width": 2.6, "stroke-linecap": "round" }, sp);
-        add("path", { d: "M-4 -3 L0 -7 L4 -3", fill: "none", stroke: "currentColor", "stroke-width": 2.6, "stroke-linecap": "round", "stroke-linejoin": "round" }, sp);
-        el[j].push(sp);
-      }
-    }
-    // Metropolis Monte Carlo at T below Tc, with a weak field holding the two domains: the wall fluctuates, stray spins heal.
-    if (motionOK) {
-      const fig = svg.closest("figure"), T = 2.1, mc = Math.random;
-      setInterval(() => {
-        if (!fig.classList.contains("playing")) return;
-        for (let n = 0; n < 4; n++) {
-          const j = mc() * 6 | 0, i = mc() * 11 | 0, s0 = S[j][i];
-          const nb = (S[j - 1]?.[i] ?? 0) + (S[j + 1]?.[i] ?? 0) + (S[j][i - 1] ?? 0) + (S[j][i + 1] ?? 0);
-          const dE = 2 * s0 * (nb + H[j][i]);
-          if (dE <= 0 || mc() < Math.exp(-dE / T)) { S[j][i] = -s0; el[j][i].classList.toggle("down", s0 > 0); }
-        }
-      }, 160);
-    }
-    // inset: |M| vs T
-    const ix = 158, iy = 96, iw = 74, ih = 46;
-    add("rect", { x: ix, y: iy, width: iw, height: ih, rx: 6, fill: "#ffffff", opacity: .94 });
-    add("path", { d: `M${ix + 10} ${iy + 6} V${iy + ih - 9} H${ix + iw - 5}`, fill: "none", stroke: "#1b2340", "stroke-width": 1 });
-    let md = ""; const tc = 0.55;
-    for (let t = 0; t <= 1.0001; t += 0.02) {
-      const m = t < tc ? Math.pow(1 - Math.pow(t / tc, 4), 0.125) : 0;
-      md += (t ? "L" : "M") + (ix + 10 + t * (iw - 18)).toFixed(1) + " " + (iy + ih - 9 - m * (ih - 18)).toFixed(1);
-    }
-    add("path", { d: md, fill: "none", stroke: "#c62f83", "stroke-width": 2, "stroke-linejoin": "round" });
-    const tx = ix + 10 + tc * (iw - 18);
-    add("line", { x1: tx, y1: iy + 6, x2: tx, y2: iy + ih - 9, stroke: "#5b3fd6", "stroke-width": 1, "stroke-dasharray": "2 2" });
-    const t = (x, y, s, it) => add("text", { x, y, "font-family": it ? "Georgia, serif" : "IBM Plex Sans, sans-serif", "font-style": it ? "italic" : "normal", "font-size": 7.5, fill: "#1b2340" }).textContent = s;
-    t(ix + 3, iy + 14, "M", true); t(ix + iw - 10, iy + ih - 2, "T", true); t(tx - 4, iy + ih - 2, "Tc", true);
-  })();
 
   // Scroll: reveal entries once, run illustrations only while visible, fill the timeline as you go.
   (function scrollMotion() {
