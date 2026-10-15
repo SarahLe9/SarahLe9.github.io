@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
 <title>Sarah Lechtser</title>
 <meta name="description" content="Sarah Lechtser — M.Sc. student at the Weizmann Institute of Science. Head of R&D, software engineer, physicist.">
 <link rel="canonical" href="https://sarahlechtser.com/">
@@ -184,13 +185,96 @@
 
   footer { margin-top: 8px; padding-top: 24px; border-top: 1px solid var(--line); text-align: center; color: var(--faint); font-size: 13px; }
 
+
+  /* ---------- Motion ---------- */
+  .timeline::after {
+    content: ""; position: absolute; top: 8px; bottom: 8px; left: 140px; width: 2px; border-radius: 2px;
+    clip-path: inset(0 0 calc((1 - var(--p, 0)) * 100%) 0);
+    background: var(--grad, linear-gradient(to bottom, var(--cyan) 10%, var(--magenta) 15% 28%, var(--amber) 33% 39%, var(--violet) 44% 71%, var(--green) 76%));
+  }
+  .tissue .spot { transition: scale .35s cubic-bezier(.2,.8,.2,1); }
+  .spin { color: #c62f83; transform-box: fill-box; transform-origin: center; }
+  .spin.down { color: #1597ae; rotate: 180deg; }
+  @media (prefers-reduced-motion: reduce) { .timeline { --p: 1; } }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* page load: name, tagline, bio and links rise in after the tissue */
+    @keyframes rise { from { opacity: 0; transform: translateY(16px); } }
+    .js header > :not(.tissue) { animation: rise .9s cubic-bezier(.2,.7,.2,1) both; }
+    .js header h1 { animation-delay: .35s; } .js header .tagline { animation-delay: .5s; }
+    .js header .bio { animation-delay: .65s; } .js header .links { animation-delay: .8s; }
+
+    /* scroll: entries and sections fade up once; timeline dots pop */
+    .js .entry > *, .js section.block { opacity: 0; transform: translateY(18px); transition: opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1); }
+    .js .entry > :last-child { transition-delay: .08s; }
+    .js .entry.is-in > *, .js section.block.is-in { opacity: 1; transform: none; }
+    .js .entry::before { scale: 0; transition: scale .55s cubic-bezier(.3,1.7,.5,1) .05s; }
+    .js .entry.is-in::before { scale: 1; }
+    .js .projects figure { opacity: 0; transform: translateY(14px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+    .js .entry.is-in .projects figure { opacity: 1; transform: none; }
+    .js .entry.is-in .projects figure:nth-child(1) { transition-delay: .15s; } .js .entry.is-in .projects figure:nth-child(2) { transition-delay: .25s; }
+    .js .entry.is-in .projects figure:nth-child(3) { transition-delay: .35s; } .js .entry.is-in .projects figure:nth-child(4) { transition-delay: .45s; }
+
+    /* living illustrations — paused while off screen */
+    .js figure:not(.playing) svg * { animation-play-state: paused !important; }
+    .bob { animation: bob 3.6s ease-in-out infinite alternate; }
+    @keyframes bob { to { translate: 0 -5px; } }
+
+    .sway { transform-box: fill-box; transform-origin: 50% 100%; animation: sway 4.5s ease-in-out infinite alternate; }
+    .sway:nth-of-type(2) { animation-delay: -1.2s; } .sway:nth-of-type(3) { animation-delay: -2.1s; } .sway:nth-of-type(4) { animation-delay: -3s; }
+    @keyframes sway { from { rotate: -2deg; } to { rotate: 2.5deg; } }
+    .glow { transform-box: fill-box; transform-origin: center; animation: glow 3.5s ease-in-out infinite alternate; }
+    @keyframes glow { to { scale: 1.25; opacity: .65; } }
+    .drift { animation: drift 7s ease-in-out infinite alternate; }
+    .drift-b { animation-duration: 9s; animation-delay: -3s; }
+    @keyframes drift { 50% { translate: 10px -5px; } 100% { translate: 20px 1px; } }
+    .orbit { animation: orbit 5s linear infinite; }
+    @keyframes orbit { to { stroke-dashoffset: -70; } }
+
+    .atoms circle, .halos circle { transform-box: fill-box; transform-origin: center; animation: twinkle 2.4s ease-in-out infinite; }
+    .atoms circle:nth-child(2), .halos circle:nth-child(2) { animation-delay: -.6s; }
+    .atoms circle:nth-child(3), .halos circle:nth-child(3) { animation-delay: -1.2s; }
+    .atoms circle:nth-child(4), .halos circle:nth-child(4) { animation-delay: -1.8s; }
+    @keyframes twinkle { 50% { scale: .78; opacity: .7; } }
+    .stray { animation: stray 4.2s ease-in-out infinite; }
+    @keyframes stray { 0%, 100% { translate: -16px 3px; opacity: .25; } 50% { translate: 16px -3px; opacity: 1; } }
+    .beams { animation: flicker 2.6s ease-in-out infinite alternate; }
+    @keyframes flicker { to { opacity: .7; } }
+    .px { animation: shimmer 2.6s ease-in-out infinite; }
+    @keyframes shimmer { 50% { opacity: calc(var(--o) * .3); } }
+
+    .hop { animation: march 1s linear infinite; }
+    @keyframes march { to { stroke-dashoffset: -12; } }
+    .desorb { animation: desorb 3.4s ease-in infinite; }
+    @keyframes desorb { 0% { translate: -2px 24px; opacity: 0; } 18%, 75% { opacity: 1; } 100% { translate: 4px -8px; opacity: 0; } }
+
+    .pulse { animation: pulse 1.8s ease-in-out infinite; }
+    @keyframes pulse { 50% { opacity: .3; } }
+    .sweep { animation: sweep 3s cubic-bezier(.6,0,.4,1) infinite; }
+    @keyframes sweep { 0% { translate: 0 0; opacity: 0; } 10%, 88% { opacity: 1; } 100% { translate: 160px 0; opacity: 0; } }
+
+    .spin { transition: rotate .45s cubic-bezier(.4,1.6,.5,1), color .45s ease; }
+
+    /* hover */
+    .logo { transition: transform .35s cubic-bezier(.3,1.6,.5,1); }
+    .entry:hover .logo { transform: rotate(-6deg) scale(1.07); }
+    .links a { transition: border-color .2s, color .2s, transform .25s cubic-bezier(.3,1.6,.5,1); }
+    .links a:hover { transform: translateY(-2px); }
+    .chips span { transition: transform .2s ease, border-color .2s ease; }
+    .chips span:hover { transform: translateY(-2px); border-color: var(--c); }
+    .beyond li { transition: transform .3s ease, box-shadow .3s ease; }
+    .beyond li:hover { transform: translateY(-3px); box-shadow: 0 12px 26px -16px color-mix(in srgb, var(--c) 70%, transparent); }
+    .beyond li:hover svg { animation: wiggle .6s ease-in-out; }
+    @keyframes wiggle { 30% { rotate: -9deg; } 65% { rotate: 6deg; } }
+  }
+
   /* ---------- Mobile ---------- */
   @media (max-width: 640px) {
     .page { padding-top: 16px; }
     h1 { font-size: 42px; }
     .bio { font-size: 16px; }
     .timeline { margin-top: 56px; }
-    .timeline::before { left: 5px; }
+    .timeline::before, .timeline::after { left: 5px; }
     .entry { grid-template-columns: 1fr; padding-left: 32px; padding-bottom: 44px; }
     .entry::before { left: 0; top: 6px; }
     .date { text-align: left; margin-bottom: 10px; }
@@ -276,7 +360,7 @@
               <g id="ab"><path d="M0 7 V0 M0 0 L-5 -6 M0 0 L5 -6" fill="none" stroke-width="2.4" stroke-linecap="round"/><circle cx="-5" cy="-6" r="1.6"/><circle cx="5" cy="-6" r="1.6"/></g>
             </defs>
             <rect width="600" height="210" fill="url(#wSky)"/>
-            <circle cx="500" cy="52" r="44" fill="url(#wSun)"/>
+            <circle class="glow" cx="500" cy="52" r="44" fill="url(#wSun)"/>
             <circle cx="500" cy="52" r="24" fill="#ffd27a"/>
             <!-- DNA helix drifting across the sky (drawn by script) -->
             <g id="wzHelix"></g>
@@ -287,14 +371,14 @@
               <line x1="442" y1="53" x2="452" y2="47"/>
             </g>
             <!-- antibodies flying like birds -->
-            <g fill="#c62f83" stroke="#c62f83"><use href="#ab" transform="translate(262 34) rotate(-15)"/><use href="#ab" transform="translate(286 48) rotate(10) scale(.8)"/><use href="#ab" transform="translate(578 34) rotate(20) scale(.8)"/></g>
-            <g fill="#5b3fd6" stroke="#5b3fd6"><use href="#ab" transform="translate(240 56) rotate(5) scale(.7)"/><use href="#ab" transform="translate(372 30) rotate(-25) scale(.75)"/></g>
+            <g class="drift" fill="#c62f83" stroke="#c62f83"><use href="#ab" transform="translate(262 34) rotate(-15)"/><use href="#ab" transform="translate(286 48) rotate(10) scale(.8)"/><use href="#ab" transform="translate(578 34) rotate(20) scale(.8)"/></g>
+            <g class="drift drift-b" fill="#5b3fd6" stroke="#5b3fd6"><use href="#ab" transform="translate(240 56) rotate(5) scale(.7)"/><use href="#ab" transform="translate(372 30) rotate(-25) scale(.75)"/></g>
             <path d="M0 150 C 90 128, 180 140, 260 132 S 450 120, 600 138 V210 H0Z" fill="#bfe6ee"/>
             <!-- accelerator tower -->
             <rect x="318" y="58" width="26" height="110" fill="#1597ae"/>
             <rect x="306" y="36" width="50" height="30" rx="7" fill="#117f93"/>
             <rect x="306" y="48" width="50" height="3" fill="#cdeff5" opacity=".6"/>
-            <g fill="none" stroke="#1597ae" stroke-width="1.5" opacity=".45"><ellipse cx="331" cy="51" rx="40" ry="10"/><ellipse cx="331" cy="51" rx="58" ry="15" stroke-dasharray="3 4"/></g>
+            <g fill="none" stroke="#1597ae" stroke-width="1.5" opacity=".45"><ellipse cx="331" cy="51" rx="40" ry="10"/><ellipse class="orbit" cx="331" cy="51" rx="58" ry="15" stroke-dasharray="3 4"/></g>
             <!-- low campus buildings -->
             <g fill="#ffffff" stroke="#cbe6ec" stroke-width="2">
               <rect x="130" y="128" width="150" height="46" rx="3"/><rect x="380" y="136" width="160" height="38" rx="3"/>
@@ -306,7 +390,7 @@
             </g>
             <path d="M0 172 C 120 164, 260 176, 380 168 S 540 166, 600 172 V210 H0Z" fill="#a6dbb5"/>
             <path d="M250 210 C 270 190, 300 180, 330 176 L 342 176 C 330 184, 318 196, 314 210Z" fill="#f2efe6"/>
-            <use href="#palm" x="70" y="178"/><use href="#palm" x="296" y="180"/><use href="#palm" x="372" y="182"/><use href="#palm" x="560" y="180"/>
+            <use class="sway" href="#palm" x="70" y="178"/><use class="sway" href="#palm" x="296" y="180"/><use class="sway" href="#palm" x="372" y="182"/><use class="sway" href="#palm" x="560" y="180"/>
             <!-- flower beds -->
             <g fill="#c62f83" opacity=".75"><circle cx="110" cy="182" r="4"/><circle cx="122" cy="186" r="3"/><circle cx="470" cy="184" r="4"/><circle cx="482" cy="188" r="3"/><circle cx="196" cy="190" r="3"/></g>
             <g fill="#f5b638"><circle cx="116" cy="190" r="3"/><circle cx="476" cy="192" r="3"/><circle cx="206" cy="186" r="2.5"/><circle cx="420" cy="190" r="3"/></g>
@@ -405,17 +489,19 @@
               <g fill="none" stroke="#4cc9de" stroke-width="1" opacity=".35">
                 <path d="M30 30 Q120 40 210 30"/><path d="M34 36 Q120 46 206 36"/><path d="M38 42 Q120 52 202 42"/>
               </g>
-              <g fill="url(#beam)">
+              <g class="beams" fill="url(#beam)">
                 <polygon points="22,25 70,25 51,94 41,94"/><polygon points="70,25 118,25 99,94 89,94"/>
                 <polygon points="122,25 170,25 151,94 141,94"/><polygon points="170,25 218,25 199,94 189,94"/>
                 <polygon points="41,94 51,94 66,140 26,140"/><polygon points="89,94 99,94 114,140 74,140"/>
                 <polygon points="141,94 151,94 166,140 126,140"/><polygon points="189,94 199,94 214,140 174,140"/>
               </g>
-              <g fill="url(#halo)"><circle cx="46" cy="94" r="20"/><circle cx="94" cy="94" r="20"/><circle cx="146" cy="94" r="20"/><circle cx="194" cy="94" r="20"/></g>
-              <g fill="url(#atom)"><circle cx="46" cy="94" r="11"/><circle cx="94" cy="94" r="11"/><circle cx="146" cy="94" r="11"/><circle cx="194" cy="94" r="11"/></g>
+              <g class="halos" fill="url(#halo)"><circle cx="46" cy="94" r="20"/><circle cx="94" cy="94" r="20"/><circle cx="146" cy="94" r="20"/><circle cx="194" cy="94" r="20"/></g>
+              <g class="atoms" fill="url(#atom)"><circle cx="46" cy="94" r="11"/><circle cx="94" cy="94" r="11"/><circle cx="146" cy="94" r="11"/><circle cx="194" cy="94" r="11"/></g>
               <!-- a stray atom drifting between traps -->
-              <circle cx="120" cy="104" r="3" fill="#f06bb3" opacity=".6"/>
-              <path d="M112 108 q-6 3 -12 1" stroke="#f06bb3" stroke-width="1" fill="none" opacity=".4" stroke-dasharray="2 2"/>
+              <g class="stray">
+                <circle cx="120" cy="104" r="3" fill="#f06bb3" opacity=".6"/>
+                <path d="M112 108 q-6 3 -12 1" stroke="#f06bb3" stroke-width="1" fill="none" opacity=".4" stroke-dasharray="2 2"/>
+              </g>
             </svg>
             <figcaption><b>Optical tweezers for quantum simulation</b>Developed SLM-based optical trapping systems for ultracold Fermi gas experiments.</figcaption>
           </figure>
@@ -441,7 +527,8 @@
                 </g>
               </g>
               <!-- highlighted bond -->
-              <line x1="146" y1="34" x2="178" y2="34" stroke="#c62f83" stroke-width="4" stroke-linecap="round"/>
+              <line class="pulse" x1="146" y1="34" x2="178" y2="34" stroke="#c62f83" stroke-width="4" stroke-linecap="round"/>
+              <circle class="sweep" cx="50" cy="34" r="4.5" fill="#c62f83"/>
               <text x="157" y="26" font-family="Georgia, serif" font-style="italic" font-size="11" fill="#c62f83">χ</text>
               <g fill="#5b3fd6"><circle cx="50" cy="34" r="10"/><circle cx="82" cy="34" r="10"/><circle cx="114" cy="34" r="10"/><circle cx="146" cy="34" r="10"/><circle cx="178" cy="34" r="10"/><circle cx="210" cy="34" r="10"/></g>
               <g fill="#c62f83"><rect x="41" y="66" width="18" height="18" rx="4"/><rect x="73" y="66" width="18" height="18" rx="4"/><rect x="105" y="66" width="18" height="18" rx="4"/><rect x="137" y="66" width="18" height="18" rx="4"/><rect x="169" y="66" width="18" height="18" rx="4"/><rect x="201" y="66" width="18" height="18" rx="4"/></g>
@@ -568,6 +655,7 @@
   // Seeded random so the pictures are the same on every visit.
   function rng(seed) { return () => (seed = (seed * 16807) % 2147483647) / 2147483647; }
   const NS = "http://www.w3.org/2000/svg";
+  const motionOK = !matchMedia("(prefers-reduced-motion: reduce)").matches;
   function adder(parent) { return (tag, attrs, into) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); (into || parent).appendChild(e); return e; }; }
 
   // Hero: hex grid of spots around the photo, colored by "cell-type" clusters, with antibodies at the edge.
@@ -598,24 +686,40 @@
       const a = (i / 9) * Math.PI * 2 + 0.35 + r() * 0.3, d = 226 + r() * 10;
       const x = C + Math.cos(a) * d, y = C + Math.sin(a) * d, col = colors[(i * 2) % colors.length];
       const outerG = add("g", { transform: `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${(a * 180 / Math.PI + 90 + (r() - .5) * 40).toFixed(0)}) scale(${(1 + r() * .4).toFixed(2)})` });
-      const g = add("g", { stroke: col, fill: col, class: "spot" }, outerG);
+      const bob = add("g", { class: "bob" }, outerG); bob.style.animationDelay = `${-i * 0.45}s`;
+      const g = add("g", { stroke: col, fill: col, class: "spot" }, bob);
       g.style.setProperty("--o", ".9"); g.style.transformBox = "fill-box"; g.style.transformOrigin = "center"; g.style.animationDelay = `${500 + i * 60}ms`;
       add("path", { d: "M0 7 V0 M0 0 L-5 -6 M0 0 L5 -6", fill: "none", "stroke-width": 2.2, "stroke-linecap": "round" }, g);
       add("circle", { cx: -5, cy: -6, r: 1.5, stroke: "none" }, g); add("circle", { cx: 5, cy: -6, r: 1.5, stroke: "none" }, g);
     }
+    // Hovering the tissue magnifies the spots under the pointer, like a lens.
+    if (motionOK && matchMedia("(pointer: fine)").matches) {
+      const tis = svg.parentElement, spots = [...svg.querySelectorAll("circle.spot")].map(c => ({ c, x: +c.getAttribute("cx"), y: +c.getAttribute("cy") }));
+      let raf = 0, px = -1e3, py = -1e3;
+      const apply = () => { raf = 0; for (const s of spots) { const f = Math.max(0, 1 - Math.hypot(s.x - px, s.y - py) / 90); s.c.style.scale = f ? (1 + f * f * 1.2).toFixed(2) : ""; } };
+      tis.addEventListener("pointermove", e => { const b = svg.getBoundingClientRect(); px = (e.clientX - b.left) / b.width * 520; py = (e.clientY - b.top) / b.height * 520; raf ||= requestAnimationFrame(apply); });
+      tis.addEventListener("pointerleave", () => { px = py = -1e3; raf ||= requestAnimationFrame(apply); });
+    }
   })();
 
-  // Weizmann scene: a DNA double helix across the sky.
+  // Weizmann scene: a DNA double helix across the sky, slowly turning.
   (function helix() {
     const g = document.getElementById("wzHelix"), add = adder(g);
-    const x0 = 30, x1 = 220, yc = 52, amp = 13, k = 2 * Math.PI / 64;
+    const x0 = 30, x1 = 220, yc = 52, amp = 13, k = 2 * Math.PI / 64, cols = ["#c62f83", "#f5b638", "#23935e", "#5b3fd6"];
+    const rungs = [];
+    for (let x = x0 + 4; x < x1; x += 8) rungs.push({ x, el: add("line", { x1: x, x2: x, stroke: cols[(x / 8) % 4 | 0], "stroke-width": 2, opacity: .55 }) });
+    const a = add("path", { fill: "none", stroke: "#1597ae", "stroke-width": 3, "stroke-linecap": "round", opacity: .8 });
+    const b = add("path", { fill: "none", stroke: "#5b3fd6", "stroke-width": 3, "stroke-linecap": "round", opacity: .7 });
     const strand = ph => { let d = ""; for (let x = x0; x <= x1; x += 2) d += (x === x0 ? "M" : "L") + x + " " + (yc + amp * Math.sin(k * x + ph)).toFixed(1); return d; };
-    for (let x = x0 + 4; x < x1; x += 8) {
-      const ya = yc + amp * Math.sin(k * x), yb = yc + amp * Math.sin(k * x + Math.PI);
-      add("line", { x1: x, y1: ya.toFixed(1), x2: x, y2: yb.toFixed(1), stroke: ["#c62f83", "#f5b638", "#23935e", "#5b3fd6"][(x / 8) % 4 | 0], "stroke-width": 2, opacity: .55 });
-    }
-    add("path", { d: strand(0), fill: "none", stroke: "#1597ae", "stroke-width": 3, "stroke-linecap": "round", opacity: .8 });
-    add("path", { d: strand(Math.PI), fill: "none", stroke: "#5b3fd6", "stroke-width": 3, "stroke-linecap": "round", opacity: .7 });
+    const draw = ph => {
+      a.setAttribute("d", strand(ph)); b.setAttribute("d", strand(ph + Math.PI));
+      for (const r of rungs) { r.el.setAttribute("y1", (yc + amp * Math.sin(k * r.x + ph)).toFixed(1)); r.el.setAttribute("y2", (yc + amp * Math.sin(k * r.x + ph + Math.PI)).toFixed(1)); }
+    };
+    draw(0);
+    if (!motionOK) return;
+    const fig = g.closest("figure");
+    const tick = t => { if (fig.classList.contains("playing")) draw(-t / 700); requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
   })();
 
   // SLM phase pixels (a hologram strip).
@@ -623,7 +727,9 @@
     const add = adder(document.getElementById("slm")), r = rng(5);
     for (let i = 0; i < 34; i++) {
       const v = 0.5 + 0.5 * Math.sin(i * 0.9) * Math.cos(i * 0.31);
-      add("rect", { x: 18 + i * 6, y: 15, width: 5.4, height: 8, rx: 1, fill: "#9c87ff", opacity: (0.25 + v * 0.7 + r() * 0.05).toFixed(2) });
+      const o = (0.25 + v * 0.7 + r() * 0.05).toFixed(2);
+      const px = add("rect", { x: 18 + i * 6, y: 15, width: 5.4, height: 8, rx: 1, fill: "#9c87ff", opacity: o, class: "px" });
+      px.style.setProperty("--o", o); px.style.animationDelay = `${(-i * 0.13).toFixed(2)}s`;
     }
   })();
 
@@ -639,11 +745,12 @@
       if (t === "CO") { add("circle", { cx: x, cy: y + 1.5, r: 4.6, fill: "#1b2340" }); add("circle", { cx: x, cy: y - 4.5, r: 4.2, fill: "#c62f83" }); }
     }
     [[56, 54, 74, 54], [147, 87, 147, 104], [110, 120, 128, 120]].forEach(([x1, y1, x2, y2]) => {
-      add("path", { d: `M${x1} ${y1} Q${(x1 + x2) / 2 + (y1 === y2 ? 0 : 12)} ${(y1 + y2) / 2 - (y1 === y2 ? 14 : 0)} ${x2} ${y2}`, fill: "none", stroke: "#5b3fd6", "stroke-width": 2.2, "stroke-dasharray": "3 3" });
+      add("path", { d: `M${x1} ${y1} Q${(x1 + x2) / 2 + (y1 === y2 ? 0 : 12)} ${(y1 + y2) / 2 - (y1 === y2 ? 14 : 0)} ${x2} ${y2}`, fill: "none", stroke: "#5b3fd6", "stroke-width": 2.2, "stroke-dasharray": "3 3", class: "hop" });
     });
     // CO2 desorbing: O=C=O with a rising trail
     add("path", { d: "M183 33 C 186 24, 192 20, 196 14", fill: "none", stroke: "#c98300", "stroke-width": 1.6, "stroke-dasharray": "2 3" });
-    add("circle", { cx: 192, cy: 11, r: 4.2, fill: "#c62f83" }); add("circle", { cx: 201, cy: 11, r: 4.6, fill: "#1b2340" }); add("circle", { cx: 210, cy: 11, r: 4.2, fill: "#c62f83" });
+    const co2 = add("g", { class: "desorb" });
+    add("circle", { cx: 192, cy: 11, r: 4.2, fill: "#c62f83" }, co2); add("circle", { cx: 201, cy: 11, r: 4.6, fill: "#1b2340" }, co2); add("circle", { cx: 210, cy: 11, r: 4.2, fill: "#c62f83" }, co2);
     // legend
     const lg = (x, label) => add("text", { x, y: 15, "font-family": "IBM Plex Sans, sans-serif", "font-size": 8.5, "font-weight": 600, fill: "#7a5a12" }).textContent = label;
     add("circle", { cx: 20, cy: 12, r: 3.6, fill: "#c62f83" }); lg(27, "O");
@@ -662,12 +769,30 @@
       wd += (j ? "L" : "M") + wx.toFixed(1) + " " + (j ? 22 + j * 21.5 : 10) + (j === 5 ? " V140" : "");
     }
     add("path", { d: wd, fill: "none", stroke: "#5b3fd6", "stroke-width": 1.4, "stroke-dasharray": "4 3", opacity: .7 });
-    for (let j = 0; j < 6; j++) for (let i = 0; i < 11; i++) {
-      const x = 22 + i * 19.6, y = 22 + j * 21.5;
-      let up = x < wall(j); if (r() < 0.1) up = !up;
-      const col = up ? "#c62f83" : "#1597ae", dy = up ? -7 : 7;
-      add("line", { x1: x, y1: y - dy, x2: x, y2: y + dy, stroke: col, "stroke-width": 2.6, "stroke-linecap": "round" });
-      add("path", { d: `M${x - 4} ${y + dy - (up ? -4 : 4)} L${x} ${y + dy} L${x + 4} ${y + dy - (up ? -4 : 4)}`, fill: "none", stroke: col, "stroke-width": 2.6, "stroke-linecap": "round", "stroke-linejoin": "round" });
+    const S = [], H = [], el = [];
+    for (let j = 0; j < 6; j++) { S.push([]); H.push([]); el.push([]);
+      for (let i = 0; i < 11; i++) {
+        const x = 22 + i * 19.6, y = 22 + j * 21.5;
+        let up = x < wall(j); H[j].push(up ? 0.5 : -0.5); if (r() < 0.1) up = !up;
+        S[j].push(up ? 1 : -1);
+        const sp = add("g", { class: "spin" + (up ? "" : " down") }, add("g", { transform: `translate(${x} ${y})` }));
+        add("line", { x1: 0, y1: 7, x2: 0, y2: -7, stroke: "currentColor", "stroke-width": 2.6, "stroke-linecap": "round" }, sp);
+        add("path", { d: "M-4 -3 L0 -7 L4 -3", fill: "none", stroke: "currentColor", "stroke-width": 2.6, "stroke-linecap": "round", "stroke-linejoin": "round" }, sp);
+        el[j].push(sp);
+      }
+    }
+    // Metropolis Monte Carlo at T below Tc, with a weak field holding the two domains: the wall fluctuates, stray spins heal.
+    if (motionOK) {
+      const fig = svg.closest("figure"), T = 2.1, mc = Math.random;
+      setInterval(() => {
+        if (!fig.classList.contains("playing")) return;
+        for (let n = 0; n < 4; n++) {
+          const j = mc() * 6 | 0, i = mc() * 11 | 0, s0 = S[j][i];
+          const nb = (S[j - 1]?.[i] ?? 0) + (S[j + 1]?.[i] ?? 0) + (S[j][i - 1] ?? 0) + (S[j][i + 1] ?? 0);
+          const dE = 2 * s0 * (nb + H[j][i]);
+          if (dE <= 0 || mc() < Math.exp(-dE / T)) { S[j][i] = -s0; el[j][i].classList.toggle("down", s0 > 0); }
+        }
+      }, 160);
     }
     // inset: |M| vs T
     const ix = 158, iy = 96, iw = 74, ih = 46;
@@ -683,6 +808,37 @@
     add("line", { x1: tx, y1: iy + 6, x2: tx, y2: iy + ih - 9, stroke: "#5b3fd6", "stroke-width": 1, "stroke-dasharray": "2 2" });
     const t = (x, y, s, it) => add("text", { x, y, "font-family": it ? "Georgia, serif" : "IBM Plex Sans, sans-serif", "font-style": it ? "italic" : "normal", "font-size": 7.5, fill: "#1b2340" }).textContent = s;
     t(ix + 3, iy + 14, "M", true); t(ix + iw - 10, iy + ih - 2, "T", true); t(tx - 4, iy + ih - 2, "Tc", true);
+  })();
+
+  // Scroll: reveal entries once, run illustrations only while visible, fill the timeline as you go.
+  (function scrollMotion() {
+    const entries = document.querySelectorAll(".entry, section.block"), figs = document.querySelectorAll(".place, .projects figure");
+    if (!motionOK || !("IntersectionObserver" in window)) {
+      entries.forEach(e => e.classList.add("is-in")); figs.forEach(f => f.classList.add("playing")); return;
+    }
+    const once = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("is-in"); once.unobserve(e.target); } }), { rootMargin: "0px 0px -12% 0px" });
+    entries.forEach(e => once.observe(e));
+    const live = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle("playing", e.isIntersecting)));
+    figs.forEach(f => live.observe(f));
+    const tl = document.querySelector(".timeline"); let q = 0;
+    const upd = () => {
+      q = 0; const b = tl.getBoundingClientRect();
+      tl.style.setProperty("--p", Math.min(1, Math.max(0, (innerHeight * .65 - b.top) / b.height)).toFixed(4));
+      // anything scrolled past (a jump, the End key, the bottom of the page) shows too
+      const atEnd = innerHeight + scrollY >= document.documentElement.scrollHeight - 4;
+      entries.forEach(e => { if (!e.classList.contains("is-in") && (atEnd || e.getBoundingClientRect().top < innerHeight * .88)) e.classList.add("is-in"); });
+    };
+    addEventListener("scroll", () => { q ||= requestAnimationFrame(upd); }, { passive: true });
+    // Color the line to match each entry, wherever the entries actually sit (desktop and phone layouts differ).
+    const paint = () => {
+      const tb = tl.getBoundingClientRect();
+      const pts = [...tl.querySelectorAll(".entry")].map(e => ({ c: getComputedStyle(e).getPropertyValue("--c").trim(), at: (e.getBoundingClientRect().top - tb.top) / tb.height * 100 }));
+      // each entry holds its color down the line, then blends quickly just above the next dot
+      const stops = pts.map((p, k) => `${p.c} ${p.at.toFixed(1)}% ${(k + 1 < pts.length ? pts[k + 1].at - 2.5 : 100).toFixed(1)}%`);
+      tl.style.setProperty("--grad", `linear-gradient(to bottom, ${stops.join(", ")})`);
+    };
+    addEventListener("resize", () => { paint(); upd(); }); paint(); upd();
+    document.fonts?.ready.then(() => { paint(); upd(); });
   })();
 </script>
 </body>
