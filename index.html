@@ -15,12 +15,12 @@
 <meta property="og:url" content="https://sarahlechtser.com/">
 <meta property="og:title" content="Sarah Lechtser">
 <meta property="og:description" content="M.Sc. student at the Weizmann Institute of Science.">
-<meta property="og:image" content="https://sarahlechtser.com/assets/og.jpg?v=4">
+<meta property="og:image" content="https://sarahlechtser.com/assets/og.jpg?v=5">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Sarah Lechtser — her photo in a ring of colored dots beside her name">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://sarahlechtser.com/assets/og.jpg?v=4">
+<meta name="twitter:image" content="https://sarahlechtser.com/assets/og.jpg?v=5">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -726,6 +726,12 @@
       g.style.setProperty("--o", ".9"); g.style.transformBox = "fill-box"; g.style.transformOrigin = "center"; g.style.animationDelay = `${500 + i * 60}ms`;
       icon.draw(g);
     });
+    // Keep a little clear space around each icon so none of them sits on top of a spot.
+    const clear = [...svg.querySelectorAll('g[class*="icon-"]')].map(g => { const m = g.parentNode.parentNode.transform.baseVal.consolidate().matrix; return { x: m.e, y: m.f, k: Math.hypot(m.a, m.b) }; });
+    for (const c of [...svg.querySelectorAll(":scope > circle.spot")]) {
+      const x = +c.getAttribute("cx"), y = +c.getAttribute("cy"), rr = +c.getAttribute("r");
+      if (clear.some(o => Math.hypot(x - o.x, y - o.y) < rr + 11 * o.k + 3)) { c.dataset.cleared = `${x},${y},${rr}`; c.remove(); }
+    }
     // Hovering the tissue magnifies the spots under the pointer, like a lens.
     if (motionOK && matchMedia("(pointer: fine)").matches) {
       const tis = svg.parentElement, spots = [...svg.querySelectorAll("circle.spot")].map(c => ({ c, x: +c.getAttribute("cx"), y: +c.getAttribute("cy") }));
